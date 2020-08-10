@@ -11,6 +11,7 @@ import { stringify } from 'querystring';
 
 class eventMeta {
   constructor(
+    public username: string,
     public title: string,
     public startTime: string,
     public endTime: string,
@@ -30,6 +31,7 @@ export class CalendarPage implements OnInit  {
 
 
   event = {
+    username: '',
     title: '',
     desc: '',
     startTime: '',
@@ -56,8 +58,11 @@ export class CalendarPage implements OnInit  {
   StartTime: string = "";
   isPressed: boolean = false;
 
+  myName: string = "";
+
   bookRef: AngularFireList<any>;
-  //public books: Observable<any[]>;
+  public books: Observable<any[]>;
+  qEvent: eventMeta[];
 
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
  
@@ -68,6 +73,11 @@ export class CalendarPage implements OnInit  {
     ) { 
    
       this.bookRef = this.db.list('/eventInfo');
+      /*this.books = this.bookRef.snapshotChanges().pipe(
+        map(changes => 
+          changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+        )
+      );  */
     }
  
   ngOnInit() {
@@ -76,6 +86,7 @@ export class CalendarPage implements OnInit  {
  
   resetEvent() {
     this.event = {
+      username: "",
       title: '',
       desc: '',
       startTime: new Date().toISOString(),
@@ -87,6 +98,7 @@ export class CalendarPage implements OnInit  {
   // Create the right event format and reload source
   addEvent() {
     let eventCopy = {
+      username: this.event.username,
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
@@ -105,6 +117,7 @@ export class CalendarPage implements OnInit  {
     }
     //
     const newEvent = new eventMeta(
+      eventCopy.username,
       eventCopy.title,
       eventCopy.startTime.toString(),
       eventCopy.endTime.toString(),
@@ -118,6 +131,22 @@ export class CalendarPage implements OnInit  {
     this.myCal.loadEvents();
     this.resetEvent();
   }
+
+  getEvent(){
+    //username='gsw';
+    this.bookRef = this.db.list('/eventInfo',ref => ref.orderByChild('username').equalTo('gsw'));
+    this.books = this.bookRef.snapshotChanges().pipe(
+      map(changes => 
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    ); 
+    console.log(this.books);
+  }
+
+  addQ(d: string) {
+    this.qEvent.push(new eventMeta(d,'1','1','2',false,'1'));
+  }
+
   togglePressed(){
     if(this.isPressed = true){
       this.myVal1 = this.myT;

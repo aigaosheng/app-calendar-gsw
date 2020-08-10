@@ -6,6 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
@@ -13,13 +14,27 @@
     </ion-toolbar>
   </ion-header>
 
+  <ion-list>
+    <ion-item>
+      <ion-label>H2</ion-label>
+    </ion-item>
+    <ion-item *ngFor="let book of books | async">
+      <ion-label> {{ book | json }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
   <!-- Card for adding a new event -->
   <ion-card>
     <ion-card-header tappable (click)="collapseCard = !collapseCard">
       <ion-card-title>New Event</ion-card-title>
     </ion-card-header>
     <ion-card-content *ngIf="!collapseCard">
- 
+
+      <ion-item>
+        <ion-input type="text" placeholder="Username" [(ngModel)]="event.username"></ion-input>
+      </ion-item>
+
       <ion-item>
         <ion-input type="text" placeholder="Title" [(ngModel)]="event.title" [(ngModel)]="myT"></ion-input>
         <ion-label>{{myVal1}}</ion-label>
@@ -42,7 +57,9 @@
       <ion-button fill="outline" (click)="addEvent()" [disabled]="event.title == ''"  >Add Event </ion-button>
       
       <ion-button fill="outline" (click)="resetEvent()" [disabled]="event.title == ''">Clear Event</ion-button> 
- 
+
+      <ion-button fill="outline" (click)="getEvent()"  >Get Events from Database </ion-button>
+
     </ion-card-content>
   </ion-card>
  
@@ -76,3 +93,4 @@
 
   <!--<app-explore-container name="Calendar page"></app-explore-container>-->
 </ion-content>
+
