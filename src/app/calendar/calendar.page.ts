@@ -60,8 +60,8 @@ export class CalendarPage implements OnInit  {
 
   myName: string = "";
 
-  bookRef: AngularFireList<any>;
-  public books: Observable<any[]>;
+  bookRef: AngularFireList<eventMeta>;
+  public books: Observable<eventMeta[]>;
   qEvent: eventMeta[];
 
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -135,17 +135,28 @@ export class CalendarPage implements OnInit  {
   getEvent(){
     //username='gsw';
     this.bookRef = this.db.list('/eventInfo',ref => ref.orderByChild('username').equalTo('gsw'));
+    
     this.books = this.bookRef.snapshotChanges().pipe(
       map(changes => 
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
       )
     ); 
-    console.log(this.books);
+    
+    this.books.forEach(element => {
+      for (let ev of element ) {
+          /*this.qEvent.push(
+            new eventMeta(ev.username,ev.title,
+              ev.startTime,ev.endTime,ev.allDay,ev.desc)
+          );*/
+          let v:Date=new Date(ev.startTime);
+          console.log(v.getHours());//ev.startTime);
+      }
+      
+    });
+    console.log(this.qEvent);
   }
 
-  addQ(d: string) {
-    this.qEvent.push(new eventMeta(d,'1','1','2',false,'1'));
-  }
+  
 
   togglePressed(){
     if(this.isPressed = true){
