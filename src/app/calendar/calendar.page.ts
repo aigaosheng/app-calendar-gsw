@@ -44,9 +44,37 @@ export class CalendarPage implements OnInit  {
   eventSource = [];
   viewTitle;
 
+  isToday:boolean
+
   calendar = {
     mode: 'month',
     currentDate: new Date(),
+    dateFormatter: {
+      formatMonthViewDay: function(date:Date) {
+          return date.getDate().toString();
+      },
+      formatMonthViewDayHeader: function(date:Date) {
+          return 'MonMH';
+      },
+      formatMonthViewTitle: function(date:Date) {
+          return 'testMT';
+      },
+      formatWeekViewDayHeader: function(date:Date) {
+          return 'MonWH';
+      },
+      formatWeekViewTitle: function(date:Date) {
+          return 'testWT';
+      },
+      formatWeekViewHourColumn: function(date:Date) {
+          return 'testWH';
+      },
+      formatDayViewHourColumn: function(date:Date) {
+          return 'testDH';
+      },
+      formatDayViewTitle: function(date:Date) {
+          return 'testDT';
+      }
+  }
   };
   
  
@@ -72,7 +100,7 @@ export class CalendarPage implements OnInit  {
      private db: AngularFireDatabase,
     ) { 
    
-      this.bookRef = this.db.list('/eventInfo');
+      this.bookRef = this.db.list('/eventInfoGs');
       /*this.books = this.bookRef.snapshotChanges().pipe(
         map(changes => 
           changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
@@ -134,7 +162,8 @@ export class CalendarPage implements OnInit  {
 
   getEvent(){
     //username='gsw';
-    this.bookRef = this.db.list('/eventInfo',ref => ref.orderByChild('username').equalTo('gsw'));
+    //this.bookRef = this.db.list('/eventInfo',ref => ref.orderByChild('username').equalTo('gsw'));
+    this.bookRef = this.db.list('/eventInfoGs');
     
     this.books = this.bookRef.snapshotChanges().pipe(
       map(changes => 
@@ -150,39 +179,112 @@ export class CalendarPage implements OnInit  {
             new eventMeta(ev.username,ev.title,
               ev.startTime,ev.endTime,ev.allDay,ev.desc)
           );*/
+
           let vs:Date=new Date(ev.startTime);
           let ve:Date=new Date(ev.endTime);
           let vt:string=ev.title;
           let vd:string=ev.desc;
           let va:Boolean=ev.allDay;
-          //console.log(vs.getHours());//ev.startTime);
 
-          let currentEvent = {
-            vt,
-            vs,
-            ve,
-            va,
-            vd
-          };
+          let vs1:Date=new Date(vs.getTime()+2*24*60*60*1000);
+          let ve1:Date=new Date(ve.getTime()+2*24*60*60*1000);
+
+     
           //console.log(currentEvent);
           this.eventSource.push({
             title: vt,
-            startTime: vs,
-            endTime: ve,
+            startTime: vs1,
+            endTime: ve1,
             desc: vd,
             allDay: va
           });
-          this.myCal.loadEvents();
+          this.myCal.loadEvents();   
 
        // );
       }
       
     });
+      
   }
 
   
+  onViewTitleChanged(title) {
+    this.viewTitle = title;
+}
 
+onEventSelected(event) {
+    console.log('Event selected:' + event.startTime + '-' + event.endTime + ',' + event.title);
+}
 
+changeMode(mode) {
+    this.calendar.mode = mode;
+}
+
+today() {
+    this.calendar.currentDate = new Date();
+}
+
+onTimeSelected(ev) {
+    console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
+        (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+}
+
+onCurrentDateChanged(event:Date) {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    event.setHours(0, 0, 0, 0);
+    this.isToday = today.getTime() === event.getTime();
+}
+
+next() {
+  if(this.calendar.mode == 'month') {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth() + 1,
+      this.calendar.currentDate.getDay()
+    )
+  }
+  else if(this.calendar.mode == 'week') {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth(),
+      this.calendar.currentDate.getDay() + 7
+    )
+
+  }
+  else {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth(),
+      this.calendar.currentDate.getDay() + 1
+    )
+  }
+}
+
+back() {
+  if(this.calendar.mode == 'month') {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth() - 1,
+      this.calendar.currentDate.getDay()
+    )
+  }
+  else if(this.calendar.mode == 'week') {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth(),
+      this.calendar.currentDate.getDay() - 7
+    )
+
+  }
+  else {
+    this.calendar.currentDate = new Date(
+      this.calendar.currentDate.getFullYear(),
+      this.calendar.currentDate.getMonth(),
+      this.calendar.currentDate.getDay() - 1
+    )
+  }
+}
 }
 //constructor(private sms: SMS) { }
 
