@@ -98,7 +98,7 @@ export class CalendarPage implements OnInit  {
   // Create the right event format and reload source
   addEvent() {
     let eventCopy = {
-      username: this.event.username,
+      //username: this.event.username,
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
@@ -117,7 +117,7 @@ export class CalendarPage implements OnInit  {
     }
     //
     const newEvent = new eventMeta(
-      eventCopy.username,
+      this.event.username,
       eventCopy.title,
       eventCopy.startTime.toString(),
       eventCopy.endTime.toString(),
@@ -142,29 +142,45 @@ export class CalendarPage implements OnInit  {
       )
     ); 
     
+    //
+    
     this.books.forEach(element => {
       for (let ev of element ) {
           /*this.qEvent.push(
             new eventMeta(ev.username,ev.title,
               ev.startTime,ev.endTime,ev.allDay,ev.desc)
           );*/
-          let v:Date=new Date(ev.startTime);
-          console.log(v.getHours());//ev.startTime);
+          let vs:Date=new Date(ev.startTime);
+          let ve:Date=new Date(ev.endTime);
+          let vt:string=ev.title;
+          let vd:string=ev.desc;
+          let va:Boolean=ev.allDay;
+          //console.log(vs.getHours());//ev.startTime);
+
+          let currentEvent = {
+            vt,
+            vs,
+            ve,
+            va,
+            vd
+          };
+          //console.log(currentEvent);
+          this.eventSource.push({
+            title: vt,
+            startTime: vs,
+            endTime: ve,
+            desc: vd,
+            allDay: va
+          });
+          this.myCal.loadEvents();
+
+       // );
       }
       
     });
-    console.log(this.qEvent);
   }
 
   
-
-  togglePressed(){
-    if(this.isPressed = true){
-      this.myVal1 = this.myT;
-      this.myVal2= this.StartTime;
-      this.myVal3 = this.EndTime;
-    }
-  }
 
 
 }
