@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
+
 
 @Component({
   selector: 'app-explore-container',
@@ -6,7 +8,8 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./explore-container.component.scss'],
 })
 export class ExploreContainerComponent implements OnInit {
-  @Input() name: string;
+  @Input() colname: any;
+  @Input() eventme: Array<any>;
 
   constructor() { }
 

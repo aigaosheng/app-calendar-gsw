@@ -1,4 +1,23 @@
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label> {{colname.user}}</ion-label>
+      <ion-label > {{colname.title}}</ion-label>
+      <ion-label> {{colname.startTime}}</ion-label>
+      <ion-label> {{colname.endTime}}</ion-label>
+    </ion-item>
+        <ion-item *ngFor="let book of eventme; index as i ">
+
+          <ion-label> {{ book.username}}</ion-label>
+          <ion-label> {{ book.title}}</ion-label>
+          <ion-label> {{ book.startTime|date:'medium'}}</ion-label>
+          <ion-label> {{ book.endTime|date:'medium'}}</ion-label>
+      </ion-item>
+     
+  </ion-card>
+</ion-content>
+
 <div id="container">
-  <strong>{{ name }}</strong>
+ 
   <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
 </div>

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Schedule
+      Scheduled events
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,7 +12,6 @@
       <ion-title size="large">Schedule</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-input type="text" [(ngModel)]="Tt"></ion-input>
-
-  <app-explore-container name="Schedule page"></app-explore-container>
+  
+  <app-explore-container [colname]="colnames" [eventme]=eventlist></app-explore-container>
 </ion-content>
